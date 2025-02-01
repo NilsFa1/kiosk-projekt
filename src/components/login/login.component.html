@@ -1,0 +1,23 @@
+<p-card styleClass="p-shadow-4">
+  <ng-template #header>
+    <div class="header p-card-title">
+      <div>Anmeldung</div>
+    </div>
+  </ng-template>
+  <div class="p-fluid fields-wrapper">
+    <p-floatlabel variant="in" class="p-field">
+      <label for="username">Benutzername</label>
+      <input id="username" type="text" pInputText [(ngModel)]="username"/>
+    </p-floatlabel>
+    <p-floatlabel variant="in" class="p-field">
+      <label for="password">Passwort</label>
+      <input id="password" type="password" pInputText [(ngModel)]="password"/>
+    </p-floatlabel>
+    @if (errorMessage()) {
+      <p-message class="p-field" severity="error" text="{{ errorMessage() }}"></p-message>
+    }
+    <div class="p-field">
+      <p-button label="Anmelden" (click)="login()" class="p-button-primary p-button-rounded"></p-button>
+    </div>
+  </div>
+</p-card>

@@ -1,0 +1,44 @@
+<p-toolbar class="toolbar">
+  <ng-template #start>
+    <div class="flex items-center gap-2" [hidden]="!userService.$user()?.isAdmin">
+      <p-button aria-label="Menü" severity="secondary" (click)="drawerService.toggle()">
+        <span class="material-symbols-outlined">menu</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+
+  <ng-template #end>
+    <p-toggleswitch [(ngModel)]="uiService.$darkMode">
+      <ng-template #handle let-checked="checked">
+        @if (checked) {
+          <span class="material-symbols-outlined">dark_mode</span>
+        } @else {
+          <span class="material-symbols-outlined">light_mode</span>
+        }
+      </ng-template>
+    </p-toggleswitch>
+    <div>
+      @if (userService.$loggedIn()) {
+        <p-button aria-label="Logout" severity="secondary" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span>
+        </p-button>
+      } @else {
+        <p-button [hidden]="userService.$loggedIn()" aria-label="Login" severity="secondary" (click)="login()">
+          <span class="material-symbols-outlined">login</span>
+        </p-button>
+      }
+    </div>
+  </ng-template>
+</p-toolbar>
+
+<p-drawer styleClass="main-drawer" [closable]="false"
+          [(visible)]="drawerService.$isVisible"
+          position="left">
+  <ng-template #header>
+    <div class="header">
+      <img alt="Kiosk App Logo" src="/kiosk.svg" [height]="50" width="50"/>
+    </div>
+  </ng-template>
+  <p-menu styleClass="drawer-menu" [model]="items"/>
+</p-drawer>

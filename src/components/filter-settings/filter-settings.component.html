@@ -1,0 +1,18 @@
+<div class="grid">
+  <p-multi-select
+    [options]="$options()"
+    [(ngModel)]="$selectedOptions"
+    variant="filled"
+    [filter]="false"
+    placeholder="Kategorien"/>
+</div>
+
+<div class="footer">
+  <div class="footer-begin"></div>
+  <div class="main-footer"></div>
+  <div class="footer-end">
+    <p-button class="speichern" label="Speichern" (click)="onSave()">
+    </p-button>
+  </div>
+
+</div>

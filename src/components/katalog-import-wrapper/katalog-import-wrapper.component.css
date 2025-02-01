@@ -1,0 +1,10 @@
+:host {
+
+  .file-upload {
+    flex-wrap: wrap;
+
+    .p-fileupload-header {
+      flex-wrap: wrap;
+    }
+  }
+}

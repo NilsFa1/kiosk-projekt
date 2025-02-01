@@ -1,0 +1,60 @@
+<div class="p-grid">
+  <div class="flex">
+    <p-float-label variant="in">
+      <input
+        pInputText
+        [(ngModel)]="$token"
+        id="token">
+      <label for="token">Open Api Token</label>
+    </p-float-label>
+  </div>
+
+  <div>
+    <p-inputgroup>
+      <p-inputgroup-addon
+        pTooltip="URL der API (Wenn ChatGPT genutzt wird kann dies leer bleiben) z.B. lokales LLAMA mit gleicher API">
+        <i><span class="material-symbols-outlined">info</span></i>
+      </p-inputgroup-addon>
+      <p-float-label variant="in">
+        <input
+          pInputText
+          [(ngModel)]="$url"
+          id="url">
+        <label for="url">URL der API</label>
+      </p-float-label>
+    </p-inputgroup>
+  </div>
+
+  <div class="button-wrapper">
+    <p-button
+      type="button"
+      (onClick)="setKIData()"
+    >
+      <span class="material-symbols-outlined">save</span>
+    </p-button>
+  </div>
+</div>
+
+<p-fileupload name="demo[]"
+              [customUpload]="true"
+              [multiple]="false"
+              accept="image/*,application/pdf"
+              maxFileSize="100000000"
+              #fileUpload
+              uploadLabel="Importieren"
+              chooseLabel="Datei auswählen"
+              (uploadHandler)="handleUpload($event)"
+              class="file-upload"
+              mode="advanced">
+  <ng-template #empty>
+    <p-card (click)="choose()" class="upload">
+      <div>
+        <p-avatar class="avatar" styleClass="mr-2" size="xlarge" shape="circle">
+          <span class="material-symbols-outlined">upload_file</span>
+        </p-avatar>
+        <div>Drag and drop files to here to upload.</div>
+      </div>
+    </p-card>
+  </ng-template>
+</p-fileupload>
+<p-toast position="bottom-center"></p-toast>

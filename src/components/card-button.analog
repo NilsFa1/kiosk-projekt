@@ -1,0 +1,90 @@
+<script lang="ts">
+  import {output, signal} from "@angular/core";
+  import {Button} from "primeng/button";
+
+  defineMetadata({imports: [Button]});
+
+  const outputEmitt = output<number>()
+
+  const $quantity = signal(1);
+
+  function decrement() {
+    if ($quantity() > 1) {
+      $quantity.set($quantity() - 1);
+    }
+  }
+
+  function increment() {
+    $quantity.set($quantity() + 1);
+  }
+
+  function addToCart() {
+    outputEmitt.emit($quantity());
+  }
+</script>
+
+<template>
+  <div class="counter-container">
+    <p-button
+      (click)="decrement()"
+      styleClass="p-button-rounded p-button-text"
+    >
+      <span class="material-symbols-outlined">remove</span>
+    </p-button>
+
+    <span class="quantity-display">{{ $quantity() }}</span>
+
+    <p-button
+      (click)="increment()"
+      styleClass="p-button-rounded p-button-text"
+    >
+      <span class="material-symbols-outlined">add</span>
+    </p-button>
+  </div>
+
+  <p-button
+    [fluid]="true"
+    label="Hinzufügen"
+    (click)="addToCart()"
+    class="add-to-cart-button"
+  ></p-button>
+</template>
+
+<style>
+  .counter-container {
+    --p-button-padding-y: 0.7rem;
+    --p-button-padding-x: 0.7rem;
+    /* Wir verwenden ein dreispaltiges Grid:
+       - 1 Spalte für den Minus-Button
+       - 1 Spalte für die Anzeige
+       - 1 Spalte für den Plus-Button
+    */
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem; /* Abstand zwischen den Grid-Spalten */
+    width: 100%; /* Container soll ganze Breite ausfüllen (wenn möglich) */
+  }
+
+  .counter-button {
+    /* Button füllt seine Spalte komplett */
+    width: 100%;
+    /* Du kannst optional eine max-width definieren,
+       falls du die Buttons nicht zu breit haben willst */
+    max-width: 80px;
+  }
+
+  .quantity-display {
+    /* Zentriert die Zahl in der Mitte */
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .add-to-cart-button {
+    --p-button-padding-y: 0.3rem;
+    --p-button-padding-x: 0.4rem;
+    margin-top: 1rem;
+    width: 100%; /* falls du den "In den Warenkorb" Button auch breit ziehen möchtest */
+  }
+</style>

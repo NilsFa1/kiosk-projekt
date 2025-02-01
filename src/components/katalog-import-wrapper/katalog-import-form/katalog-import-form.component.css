@@ -1,0 +1,26 @@
+:host {
+  .upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .avatar {
+    margin-bottom: 16px;
+  }
+
+  .p-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    grid-template-columns: 400px 400px 80px 1fr;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

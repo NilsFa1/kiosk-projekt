@@ -1,0 +1,201 @@
+<script lang="ts">
+  import {ButtonModule} from 'primeng/button';
+  import {MainToolbarComponent} from "../../components/layout/main-toolbar/main-toolbar.component";
+  import {RouterOutlet} from "@angular/router";
+  import {UserService} from "../services/user.service";
+  import {inject, PLATFORM_ID, signal} from "@angular/core";
+  import {isPlatformBrowser} from "@angular/common";
+  import {UiService} from "../services/ui.service";
+  import {ProgressSpinner} from "primeng/progressspinner";
+  import {ProductService} from "../services/product.service";
+
+  defineMetadata({imports: [ButtonModule, ProgressSpinner, MainToolbarComponent, RouterOutlet]});
+  const userService = inject(UserService);
+  const uiService = inject(UiService);
+  const productService = inject(ProductService);
+  const plattform = inject(PLATFORM_ID);
+
+  const $loaded = signal<boolean>(false);
+
+  onInit(() => {
+    //Produkte schonmal vorladen
+    productService.reload();
+    if (isPlatformBrowser(plattform)) {
+      userService.checkToken();
+      uiService.initFromStorage();
+      setTimeout(() => $loaded.set(true), 1900);
+    }
+  })
+</script>
+
+<template>
+  @if ($loaded()) {
+    <main-toolbar></main-toolbar>
+    <router-outlet></router-outlet>
+  } @else {
+    <div class="glass-container">
+      <!-- Das Glas -->
+      <div class="glass">
+        <!-- Wasseranimation im Inneren des Glases -->
+        <div class="water-animation">
+          <!-- Mehrere, animierte Wellen -->
+          <div class="wave wave1"></div>
+          <div class="wave wave2"></div>
+          <div class="wave wave3"></div>
+        </div>
+
+        <div class="water-splash">
+          <div class="splash splash1"></div>
+          <div class="splash splash2"></div>
+          <div class="splash splash3"></div>
+        </div>
+      </div>
+    </div>
+  }
+</template>
+
+<style>
+  .glass-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 400px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Das stilisierte Glas */
+  .glass {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 4px solid #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Animation bleibt innerhalb des Glases */
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Wasseranimation: Der Wasserspiegel steigt jetzt in 2 Sekunden */
+  .water-animation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, #0077be, #00aaff);
+    animation: waterRise 2s ease-in-out forwards;
+    z-index: 1;
+  }
+
+  /* Keyframes für den einmaligen Wasseranstieg */
+  @keyframes waterRise {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* Gemeinsame Eigenschaften für die Wellen */
+  .wave {
+    position: absolute;
+    left: 0;
+    width: 200%; /* Nahtlose Wiederholung des SVG-Musters */
+    height: 50px; /* Höhe der Wellen */
+    background-size: 50% 100%;
+    background-repeat: repeat-x;
+  }
+
+  /* Erste Welle */
+  .wave1 {
+    top: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.3" d="M0,192L80,186.7C160,181,320,171,480,154.7C640,139,800,117,960,117.3C1120,117,1280,139,1360,149.3L1440,160L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path></svg>') repeat-x;
+    animation: waveMove 10s linear infinite;
+  }
+
+  /* Zweite Welle */
+  .wave2 {
+    top: 10px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.5" d="M0,192L80,186.7C160,181,320,171,480,154.7C640,139,800,117,960,117.3C1120,117,1280,139,1360,149.3L1440,160L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path></svg>') repeat-x;
+    animation: waveMove 12s linear infinite reverse;
+  }
+
+  /* Dritte Welle */
+  .wave3 {
+    top: 20px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.7" d="M0,192L80,186.7C160,181,320,171,480,154.7C640,139,800,117,960,117.3C1120,117,1280,139,1360,149.3L1440,160L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path></svg>') repeat-x;
+    animation: waveMove 8s linear infinite;
+  }
+
+  /* Keyframes für die horizontale Wellenbewegung */
+  @keyframes waveMove {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Container für die Spritzer: Etwa 30px oberhalb des Glases */
+  .water-splash {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Gemeinsame Eigenschaften für einzelne Spritzer */
+  .splash {
+    position: absolute;
+    bottom: 0;
+    width: 10px;
+    height: 10px;
+    background: #00aaff;
+    border-radius: 50%;
+    opacity: 0;
+    /* Die Spritz-Animation dauert jetzt 0.5s */
+    animation: splash 0.5s ease-out forwards;
+  }
+
+  /* Leicht versetzte Positionen und Verzögerungen für die Spritzer */
+  .splash1 {
+    left: 15%;
+    animation-delay: 2s; /* Startet genau, wenn das Wasser oben angekommen ist */
+  }
+
+  .splash2 {
+    left: 50%;
+    animation-delay: 2.05s;
+  }
+
+  .splash3 {
+    left: 85%;
+    animation-delay: 2.1s;
+  }
+
+  /* Keyframes für den Spritz-Effekt */
+  @keyframes splash {
+    0% {
+      opacity: 0;
+      transform: translateY(0) scale(0.8);
+    }
+    30% {
+      opacity: 1;
+      transform: translateY(-10px) scale(1);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-20px) scale(1.1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-30px) scale(1.2);
+    }
+  }
+</style>
