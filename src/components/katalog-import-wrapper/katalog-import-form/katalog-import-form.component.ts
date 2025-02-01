@@ -1,4 +1,4 @@
-import {Component, inject, signal, viewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal, viewChild} from '@angular/core';
 import {Badge, BadgeModule} from "primeng/badge";
 import {MessageService} from "primeng/api";
 import {Button, ButtonModule} from "primeng/button";
@@ -26,7 +26,8 @@ import {Tooltip} from "primeng/tooltip";
     ButtonModule, ToastModule, FileUploadModule, BadgeModule, Avatar, Card, InputText, FormsModule, FloatLabel, InputGroup, InputGroupAddon, Tooltip
   ],
   styleUrl: './katalog-import-form.component.css',
-  providers: [MessageService]
+  providers: [MessageService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KatalogImportFormComponent {
   messageService = inject(MessageService);

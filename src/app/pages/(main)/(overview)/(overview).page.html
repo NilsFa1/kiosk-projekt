@@ -1,0 +1,82 @@
+<p-data-view #dv class="dataview-content" [value]="$products()" [layout]="uiService.$viewMode()">
+  <ng-template #header>
+    <div class="dataviewheader">
+      <div>
+        <p-inputgroup class="searchgroup">
+          <p-inputgroup-addon>
+            <span class="material-symbols-outlined">search</span>
+          </p-inputgroup-addon>
+          <p-float-label variant="in">
+            <input pInputText id="suche" [(ngModel)]="searchService.$searchword"/>
+            <label for="suche">Suche</label>
+          </p-float-label>
+        </p-inputgroup>
+      </div>
+      @if (filterService.$selectedKategorien().length > 0) {
+        <div>
+          @for (kategorie of filterService.$selectedKategorien(); track kategorie) {
+            <p-chip class="chip" [label]="kategorie" [removable]="true"
+                    (onRemove)="removeKategorie(kategorie, $event)"
+                    (click)="show()"/>
+          }
+        </div>
+      }
+      <div class="btn-wrapper">
+        <p-button [rounded]="true" severity="secondary" (click)="show()">
+          <span class="material-symbols-outlined">tune</span>
+        </p-button>
+        <p-select-button size="small" [(ngModel)]="uiService.$viewMode" [options]="layoutOptions$ | async"
+                         [allowEmpty]="false">
+          <ng-template #item let-item>
+            @if (item === 'list') {
+              <span class="material-symbols-outlined">list</span>
+            } @else {
+              <span class="material-symbols-outlined">grid_view</span>
+            }
+          </ng-template>
+        </p-select-button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #list let-items>
+    @for (item of items; let first = $first; track item) {
+      @if (!first) {
+        <p-divider class="divider"/>
+      }
+      <div class="zeilenwrapper">
+        <div class="listen-zeile">
+          <div class="relative image-wrapper">
+            <img
+              class="image"
+              [src]="item.imageDataUrl ? item.imageDataUrl : 'https://picsum.photos/250/300'"
+              [alt]="item.name"
+            />
+          </div>
+          <div>
+            <div>{{ item.name }} <span class="kategorie">- {{ item.category }}</span></div>
+            <div class="text-lg font-medium text-surface-900 dark:text-surface-0 mt-2">
+              {{ item.description }}
+            </div>
+          </div>
+          <div>
+            @if (userService.$loggedIn()) {
+              <div>
+                <span>{{ item.price | currency: 'EUR' }}</span>
+              </div>
+              <div>
+                <card-button></card-button>
+              </div>
+            } @else {
+              <div class="currency-only">
+                <span>{{ item.price | currency: 'EUR' }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </ng-template>
+  <ng-template #grid let-items>
+    <grid-item [items]="items"></grid-item>
+  </ng-template>
+</p-data-view>

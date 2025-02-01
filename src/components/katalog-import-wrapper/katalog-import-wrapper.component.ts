@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {KatalogImportFormComponent} from "./katalog-import-form/katalog-import-form.component";
 
 @Component({
@@ -8,7 +8,8 @@ import {KatalogImportFormComponent} from "./katalog-import-form/katalog-import-f
   imports: [
     KatalogImportFormComponent
   ],
-  styleUrl: './katalog-import-wrapper.component.css'
+  styleUrl: './katalog-import-wrapper.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KatalogImportWrapperComponent {
 

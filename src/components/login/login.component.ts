@@ -21,7 +21,7 @@ import {FloatLabel} from "primeng/floatlabel";
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   username = signal('');

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {DrawerService} from "../../../app/services/drawer.service";
 import {DialogService} from "primeng/dynamicdialog";
 import {UserService} from "../../../app/services/user.service";
@@ -26,7 +26,8 @@ import {Toolbar} from "primeng/toolbar";
   standalone: true,
   templateUrl: './main-toolbar.component.html',
   styleUrl: './main-toolbar.component.css',
-  providers: [DialogService]
+  providers: [DialogService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainToolbarComponent {
   public drawerService = inject(DrawerService)
