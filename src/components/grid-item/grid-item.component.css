@@ -1,0 +1,32 @@
+:host {
+  .grid-container {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(0, 400px));
+    justify-content: center;
+  }
+
+  .image {
+    width: 100%;
+    border-radius: var(--p-border-radius-sm);
+  }
+
+  .image-cover {
+    width: 100%;
+    max-height: 8rem;
+    border-radius: var(--p-border-radius-sm);
+    object-fit: cover;
+  }
+
+  .grid-item {
+    border: 1px solid var(--p-content-border-color);
+    border-radius: var(--p-content-border-radius);
+    padding: 16px;
+  }
+
+  .currency-only {
+    span {
+      font-size: 1.2rem;
+    }
+  }
+}

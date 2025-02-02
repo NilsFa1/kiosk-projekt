@@ -1,0 +1,23 @@
+<div class="grid-container">
+  @for (product of items(); track product) {
+    <div class="grid-item">
+      <div class="image">
+        <div class="relative">
+          <img
+            class="image-cover"
+            [src]="product.imageDataUrl ? product.imageDataUrl : 'https://picsum.photos/200/300'"
+            [width]="200"
+            [height]="300"
+            [alt]="product.name"
+          />
+        </div>
+      </div>
+      <div class="currency-only">
+        <span>{{ product.price | currency: 'EUR' }}</span>
+      </div>
+      <div>{{ product.name }}</div>
+      <div>{{ product.category }}</div>
+      <div>{{ product.description }}</div>
+    </div>
+  }
+</div>

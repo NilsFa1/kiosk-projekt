@@ -7,9 +7,7 @@ import {SearchService} from "../../../services/search.service";
 import {UiService} from "../../../services/ui.service";
 import {map, startWith} from "rxjs";
 import {FilterSettingsComponent} from "../../../../components/filter-settings/filter-settings.component";
-import CardButton from "../../../../components/card-button.analog";
 import {AsyncPipe, CurrencyPipe} from "@angular/common";
-import GridItem from "../../../../components/grid-item.analog";
 import {Divider} from "primeng/divider";
 import {SelectButton} from "primeng/selectbutton";
 import {FormsModule} from "@angular/forms";
@@ -20,14 +18,14 @@ import {InputGroup} from "primeng/inputgroup";
 import {DataView} from "primeng/dataview";
 import {InputText} from "primeng/inputtext";
 import {FloatLabel} from "primeng/floatlabel";
+import {GridItemComponent} from "../../../../components/grid-item/grid-item.component";
+import {ListItemComponent} from "../../../../components/list-item/list-item.component";
 
 @Component({
   selector: 'app-overview',
   standalone: true,
   imports: [
-    CardButton,
     CurrencyPipe,
-    GridItem,
     Divider,
     SelectButton,
     FormsModule,
@@ -38,7 +36,10 @@ import {FloatLabel} from "primeng/floatlabel";
     DataView,
     AsyncPipe,
     InputText,
-    FloatLabel
+    FloatLabel,
+    GridItemComponent,
+    GridItemComponent,
+    ListItemComponent
   ],
   templateUrl: './(overview).page.html',
   styleUrl: './(overview).page.css',

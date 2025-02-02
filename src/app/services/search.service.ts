@@ -1,5 +1,5 @@
 import {Injectable, signal} from '@angular/core';
-import {Product} from "../../models/product";
+import {ApiProduct, Product} from "../../models/product";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class SearchService {
     this.$searchword.set(searchword)
   }
 
-  public searchWith(products: Product[], searchword: string) {
+  public searchWith(products: ApiProduct[], searchword: string) {
     if (this.$searchword().length === 0) {
       return products;
     }

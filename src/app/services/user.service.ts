@@ -11,7 +11,7 @@ export class UserService {
   public $user = signal<BenutzerSmall | undefined>(undefined)
   public $loggedIn = computed(() => this.$user() != undefined);
 
-  public async checkToken() {
+  public checkToken() {
     const token = localStorage.getItem('auth_token');
     if (!token) {
       return null;

@@ -1,10 +1,12 @@
 <p-toolbar class="toolbar">
   <ng-template #start>
-    <div class="flex items-center gap-2" [hidden]="!userService.$user()?.isAdmin">
-      <p-button aria-label="Menü" severity="secondary" (click)="drawerService.toggle()">
-        <span class="material-symbols-outlined">menu</span>
-      </p-button>
-    </div>
+    @if (userService.$user()?.isAdmin) {
+      <div class="flex items-center gap-2">
+        <p-button aria-label="Menü" severity="secondary" (click)="drawerService.toggle()">
+          <span class="material-symbols-outlined">menu</span>
+        </p-button>
+      </div>
+    }
   </ng-template>
 
 

@@ -1,0 +1,48 @@
+:host {
+  .listen-zeile {
+    max-width: 800px;
+    display: grid;
+    grid-template-columns: 250px 1fr 200px;
+    min-width: 300px;
+    width: 800px;
+    justify-items: stretch;
+  }
+
+  .currency-only {
+    display: grid;
+    height: 100%;
+    align-items: center;
+  }
+
+  .image {
+    border-radius: var(--p-border-radius-sm);
+    width: 12rem;
+    height: 12rem;
+  }
+
+  .zeilenwrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .currency-only span {
+    font-size: 1.2rem;
+  }
+
+  .image-wrapper {
+    height: 8rem;
+    width: 10rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .kategorie {
+    font-size: 0.75rem;
+  }
+
+  .eintrag-header {
+    margin-bottom: 0.5rem;
+  }
+}
