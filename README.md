@@ -4,9 +4,9 @@
 Eine moderne, KI-gestützte Webanwendung zur einfachen Verwaltung und Darstellung von Kiosk-Produkten.
 
 🚀 Features
-Automatische Produkterkennung: KI analysiert hochgeladene Produktlisten und generiert passende Bilder.
-Backend mit API-Integration: Leichtgewichtiges SQLite-Backend mit JWT-basierter Authentifizierung (Nicht sicher aktuell).
-Dynamische Produktdarstellung: Unterstützt Listen- und Kachelansicht, je nach Gerät und Benutzerpräferenz.
+- Automatische Produkterkennung: KI analysiert hochgeladene Produktlisten und generiert passende Bilder.
+- Backend mit API-Integration: Leichtgewichtiges SQLite-Backend mit JWT-basierter Authentifizierung (Nicht sicher aktuell).
+- Dynamische Produktdarstellung: Unterstützt Listen- und Kachelansicht, je nach Gerät und Benutzerpräferenz.
 
 ## Setup
 
