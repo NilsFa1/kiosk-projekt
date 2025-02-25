@@ -1,10 +1,8 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal} from '@angular/core';
-import {MainToolbarComponent} from "../../components/layout/main-toolbar/main-toolbar.component";
-import {RouterOutlet} from "@angular/router";
-import {UserService} from "../services/user.service";
-import {UiService} from "../services/ui.service";
-import {ProductService} from "../services/product.service";
-import {isPlatformBrowser} from "@angular/common";
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { MainToolbarComponent } from "../../components/layout/main-toolbar/main-toolbar.component";
+import { RouterOutlet } from "@angular/router";
+import { ProductService } from "../services/product.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: 'main-page',
@@ -173,8 +171,6 @@ import {isPlatformBrowser} from "@angular/common";
     }`
 })
 export default class MainPage implements OnInit {
-  private userService = inject(UserService);
-  private uiService = inject(UiService);
   private productService = inject(ProductService);
   private plattform = inject(PLATFORM_ID);
 
@@ -184,8 +180,6 @@ export default class MainPage implements OnInit {
     //Produkte schonmal vorladen
     this.productService.reload();
     if (isPlatformBrowser(this.plattform)) {
-      this.userService.checkToken();
-      this.uiService.initFromStorage();
       setTimeout(() => this.$loaded.set(true), 1900);
     }
   }

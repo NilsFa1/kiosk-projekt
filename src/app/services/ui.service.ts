@@ -52,7 +52,10 @@ export class UiService {
   private $setDarkModeEffect: EffectRef | undefined;
   private $setViewModeEffect: EffectRef | undefined;
 
-  public initFromStorage() {
+  constructor() {
+    if (!isPlatformBrowser(this.platform)) {
+      return;
+    }
     const darkMode = localStorage.getItem('darkMode');
     if (darkMode) {
       this.$darkMode.set(darkMode === 'true');

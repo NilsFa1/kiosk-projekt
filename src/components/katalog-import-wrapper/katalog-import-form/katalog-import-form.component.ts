@@ -16,6 +16,7 @@ import {FloatLabel} from "primeng/floatlabel";
 import {InputGroup} from "primeng/inputgroup";
 import {InputGroupAddon} from "primeng/inputgroupaddon";
 import {Tooltip} from "primeng/tooltip";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'katalog-import-form',
@@ -32,6 +33,7 @@ import {Tooltip} from "primeng/tooltip";
 export class KatalogImportFormComponent {
   messageService = inject(MessageService);
   productService = inject(ProductService);
+  router = inject(Router);
 
   $token = signal('')
   $url = signal('');
@@ -53,12 +55,13 @@ export class KatalogImportFormComponent {
 
     const fileUrls = await Promise.all(fileUrlsAsync);
 
-    await fetch('/api/v1//admin/analyze', {
+    await fetch('/api/v1/admin/analyze', {
       body: JSON.stringify({fileUrls: fileUrls, type: ''} as AnalyzeRequestParams),
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
     })
     this.productService.reload();
+    this.router.navigate(['/']);
   }
 
   choose() {
