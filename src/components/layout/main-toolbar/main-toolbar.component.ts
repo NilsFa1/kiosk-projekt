@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked} from '@angular/core';
 import {DrawerService} from "../../../app/services/drawer.service";
 import {DialogService} from "primeng/dynamicdialog";
 import {UserService} from "../../../app/services/user.service";
@@ -12,6 +12,11 @@ import {Button} from "primeng/button";
 import {ToggleSwitch} from "primeng/toggleswitch";
 import {FormsModule} from "@angular/forms";
 import {Toolbar} from "primeng/toolbar";
+import {Popover} from "primeng/popover";
+import {NotificationsService} from "../../../app/services/notifications.service";
+import {NotificationMessage, Topic} from "../../../models/notification";
+import {ApiProduct} from "../../../models/product";
+import {OverlayBadge} from "primeng/overlaybadge";
 
 @Component({
   selector: 'main-toolbar',
@@ -21,7 +26,9 @@ import {Toolbar} from "primeng/toolbar";
     Button,
     ToggleSwitch,
     FormsModule,
-    Toolbar
+    Toolbar,
+    Popover,
+    OverlayBadge
   ],
   standalone: true,
   templateUrl: './main-toolbar.component.html',
@@ -35,6 +42,38 @@ export class MainToolbarComponent {
   public userService = inject(UserService)
   public uiService = inject(UiService)
   public router = inject(Router)
+  public $newnotifications = inject(NotificationsService).$allNotifications;
+
+  #newNotificationEffect = effect(() => {
+    const newNotification = this.$newnotifications();
+    if (newNotification) {
+      this.$notifications.set([...untracked(() => this.$notifications()), {
+        seen: false,
+        notification: newNotification
+      }]);
+    }
+  })
+
+  public $notifications = signal<{ seen: boolean, notification: NotificationMessage<Topic> }[]>([])
+  public $newNotificationsCount = computed(() => this.$notifications().filter(n => !n.seen).length)
+
+  gelesen(id: number) {
+    this.$notifications.set(this.$notifications().map(n => n.notification.id === id ? {
+      seen: true,
+      notification: n.notification
+    } : n))
+  }
+
+  add() {
+    this.$notifications.set([{
+      seen: false,
+      notification: {
+        id: Math.random(),
+        topic: 'product_update',
+        message: {product: {id: 1, name: 'Test'} as ApiProduct}
+      }
+    }])
+  }
 
   login() {
     this.dialogService.open(LoginComponent, {

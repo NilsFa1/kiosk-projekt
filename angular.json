@@ -32,13 +32,11 @@
           "builder": "@analogjs/platform:vite-dev-server",
           "defaultConfiguration": "development",
           "options": {
-            "buildTarget": "my-app:build",
-            "port": 5173
+            "buildTarget": "my-app:build"
           },
           "configurations": {
             "development": {
-              "buildTarget": "my-app:build:development",
-              "hmr": true
+              "buildTarget": "my-app:build:development"
             },
             "production": {
               "buildTarget": "my-app:build:production"

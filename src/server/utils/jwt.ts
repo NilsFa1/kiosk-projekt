@@ -1,3 +1,4 @@
+// @ts-ignore
 import jwt from "jsonwebtoken";
 import {JWT_SECRET_ENV} from "../../models/Constants";
 

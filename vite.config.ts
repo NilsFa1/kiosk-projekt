@@ -16,7 +16,7 @@ export default defineConfig(({mode}) => ({
       experimental: {supportAnalogFormat: true}
     },
     nitro: {
-      experimental: {database: true}
+      experimental: {database: true, websocket: true}
     }
   })],
   test: {
@@ -25,6 +25,16 @@ export default defineConfig(({mode}) => ({
     setupFiles: ['src/test-setup.ts'],
     include: ['**/*.spec.ts'],
     reporters: ['default'],
+  },
+  server: {
+    port: 9000,
+    hmr: {
+      //protocol: 'ws',
+      //clientPort: 5555,
+      port: 5555,
+      path: 'vite-hmr'
+      //host: 'localhost',
+    }
   },
   define: {
     'import.meta.vitest': mode !== 'production',

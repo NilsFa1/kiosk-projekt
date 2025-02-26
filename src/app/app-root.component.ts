@@ -2,6 +2,8 @@ import {Component, inject} from '@angular/core';
 import {RouterOutlet} from "@angular/router";
 import {PrimeNG} from "primeng/config";
 import {Translation} from "primeng/api";
+import {NotificationsService} from "./services/notifications.service";
+import {UiService} from "./services/ui.service";
 
 @Component({
   selector: 'app-root',
@@ -20,6 +22,8 @@ import {Translation} from "primeng/api";
 })
 export class App {
   private config = inject(PrimeNG);
+  #_ = inject(NotificationsService);
+  #__ = inject(UiService)
 
   constructor() {
     this.config.setTranslation({

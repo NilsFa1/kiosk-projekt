@@ -6,6 +6,7 @@ import {insertProducts} from "../../../db/skripts/create-products";
 import {blobToDataUrl} from "../../../utils/blobToBase64";
 import {fail} from "@analogjs/router/server/actions";
 import {USER_CONTEXT_KEY} from "../../../../models/Constants";
+import {useNotificationManager} from "../../../composeables/notification";
 
 export default defineEventHandler(async (req) => {
   const body = await readBody<AnalyzeRequestParams>(req)
@@ -93,7 +94,7 @@ export default defineEventHandler(async (req) => {
 
   await insertProducts(imageResults);
 
-  return await Promise.all(imageResults.map(async p => ({
+  const newApiProducts = await Promise.all(imageResults.map(async p => ({
     name: p.name,
     description: p.description,
     price: p.price,
@@ -102,6 +103,14 @@ export default defineEventHandler(async (req) => {
     imageDataUrl: p.image ? await blobToDataUrl(p.image) : undefined,
     active: p.active
   }) as ApiProduct));
+
+  //Hier wird nicht awaited sondern einfach im hintergrund ggf, weiter gemacht
+  newApiProducts.forEach(p => useNotificationManager().push({
+    topic: 'new_product',
+    id: Math.random(),
+    message: {product: p}
+  }))
+  return newApiProducts;
 });
 
 // Funktion zum Herunterladen eines Bildes als Blob mit fetch

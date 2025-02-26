@@ -1,5 +1,16 @@
 :host {
   overflow: visible;
+
+  .popover {
+    min-width: 400px;
+    min-height: 200px;
+  }
+
+  .notifications-list {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+  }
 }
 
 .toolbar {
