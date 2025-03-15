@@ -1,15 +1,17 @@
 import {defineEventHandler, readBody} from "h3";
 import {AnalyzeRequestParams, AnalyzeResponse, BenutzerSmall} from "../../../../models/Benutzer";
 import OpenAI from "openai";
-import {ApiProduct, Product} from "../../../../models/product";
+import {ApiProduct} from "../../../../models/product";
 import {insertProducts} from "../../../db/skripts/create-products";
 import {blobToDataUrl} from "../../../utils/blobToBase64";
 import {fail} from "@analogjs/router/server/actions";
 import {USER_CONTEXT_KEY} from "../../../../models/Constants";
 import {useNotificationManager} from "../../../composeables/notification";
+import {useDalleRequestBatcher} from "../../../composeables/dalle-batch-requester";
+import {useProgressManager} from "../../../composeables/progress";
 
-export default defineEventHandler(async (req) => {
-  const body = await readBody<AnalyzeRequestParams>(req)
+export default defineEventHandler<{ body: AnalyzeRequestParams }>(async (req) => {
+  const body = await readBody(req)
   const user = req.context[USER_CONTEXT_KEY] as BenutzerSmall;
 
   if (user.openApiToken == null && process.env["OPENAI_API_KEY"] == null) {
@@ -17,6 +19,14 @@ export default defineEventHandler(async (req) => {
   }
   const apikey = (user.openApiToken ?? process.env["OPENAI_API_KEY"]) as string;
   const openai = new OpenAI({apiKey: apikey});
+
+  const progressmanager = useProgressManager();
+  await progressmanager.push({
+    id: Math.random(),
+    waitingCount: 0,
+    totalCount: 1,
+    activeCount: 1
+  })
 
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
@@ -69,60 +79,25 @@ export default defineEventHandler(async (req) => {
 
   const produkte = JSON.parse(response.choices[0].message.content ?? '') as AnalyzeResponse;
 
-  const imageResults = await Promise.all(produkte.products.map(async (p, i) => {
-    const prompt = `A realistic image of a ${p.name}. The product is well-lit with a neutral background, detailed and sharp, emphasizing its design and features. A typical ImageDescription of the Product is ${p.imageDescription}. The product should be displayed prominently in the middle to ensure visibility even when cropped to a 200x300 format.`;
-    const imageGenerationResult = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: prompt,
-      size: "1024x1024",
-      quality: "standard",
-      n: 1,
-    })
+  const requestBatcher = useDalleRequestBatcher();
 
-    const imageUrl = imageGenerationResult.data.at(0)?.url;
-    const imageBlob = await downloadImageAsBlob(imageUrl ?? '');
-
-    return {
+  produkte.products.map(p => requestBatcher.addRequest(p, openai).then(async p => {
+    await insertProducts([p])
+    const apiProduct: ApiProduct = {
       name: p.name,
+      description: p.description,
       price: p.price,
       category: p.category,
-      description: p.description,
-      image: imageBlob,
-      active: false
-    } as Product
-  }))
-
-  await insertProducts(imageResults);
-
-  const newApiProducts = await Promise.all(imageResults.map(async p => ({
-    name: p.name,
-    description: p.description,
-    price: p.price,
-    category: p.category,
-    id: p.id,
-    imageDataUrl: p.image ? await blobToDataUrl(p.image) : undefined,
-    active: p.active
-  }) as ApiProduct));
-
-  //Hier wird nicht awaited sondern einfach im hintergrund ggf, weiter gemacht
-  newApiProducts.forEach(p => useNotificationManager().push({
-    topic: 'new_product',
-    id: Math.random(),
-    message: {product: p}
-  }))
-  return newApiProducts;
-});
-
-// Funktion zum Herunterladen eines Bildes als Blob mit fetch
-async function downloadImageAsBlob(imageUrl: string): Promise<Blob> {
-  try {
-    const response = await fetch(imageUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      id: p.id,
+      imageDataUrl: p.image ? await blobToDataUrl(p.image) : undefined,
+      active: p.active
     }
-    return await response.blob();
-  } catch (error) {
-    console.error("Error downloading image:", error);
-    throw error;
-  }
-}
+    await useNotificationManager().push({
+      topic: 'new_product',
+      id: Math.random(),
+      message: {product: apiProduct}
+    })
+  }));
+
+  return true;
+});

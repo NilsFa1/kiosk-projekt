@@ -1,8 +1,9 @@
-import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { BenutzerSmall } from "../../models/Benutzer";
-import { jwtDecode } from "jwt-decode";
-import { Router } from "@angular/router";
-import { isPlatformBrowser } from '@angular/common';
+import {computed, inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
+import {BenutzerSmall} from "../../models/Benutzer";
+import {jwtDecode} from "jwt-decode";
+import {Router} from "@angular/router";
+import {isPlatformBrowser} from '@angular/common';
+import {usingFetch} from "./$HttpClient";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class UserService {
   public router = inject(Router)
   public $user = signal<BenutzerSmall | undefined>(undefined)
   public $loggedIn = computed(() => this.$user() != undefined);
+  $fetch = usingFetch();
 
   constructor() {
     if (!isPlatformBrowser(inject(PLATFORM_ID))) {
@@ -32,17 +34,15 @@ export class UserService {
   }
 
   public async logIn(name: string, password: string) {
-    const result = await fetch('/api/v1/login', {
-      body: JSON.stringify({ name, password }),
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    })
-
-    if (!result.ok) {
+    const token = await this.$fetch(
+      '/v1/login',
+      {method: 'POST', payload: {body: {name, password}}},
+      "text") as string;
+    
+    if (!token) {
       return false;
     }
 
-    const token = (await result.text()) as string;
     try {
       const user = jwtDecode<BenutzerSmall>(token);
       this.$user.set(user);

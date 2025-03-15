@@ -1,21 +1,26 @@
 :host {
   overflow: visible;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
   .popover {
     min-width: 400px;
     min-height: 200px;
   }
+}
 
-  .notifications-list {
-    display: flex;
-    align-items: center;
-    gap: 1rem
-  }
+.notifications-list-item-container {
+  margin-bottom: 1rem;
+}
+
+.notifications-list {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
 }
 
 .toolbar {
   border-radius: 3rem;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }

@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import {Benutzer, BenutzerSmall, LoginRequestParams} from "../../../models/Benutzer";
 import {signJWT} from "../../utils/jwt";
 import {insertUsers} from "../../db/skripts/create-user";
-import { isDevMode } from '@angular/core';
+import {isDevMode} from '@angular/core';
 
 export default defineEventHandler(async (req) => {
   const body = await readBody<LoginRequestParams>(req)
@@ -33,5 +33,5 @@ export default defineEventHandler(async (req) => {
   const token = signJWT(b);
 
   setCookie(req, 'auth_token', token, {httpOnly: true, secure: isDevMode() ? false : true, maxAge: 3600});
-  return token;
+  return token as string;
 });

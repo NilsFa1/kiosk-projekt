@@ -2,14 +2,16 @@
   <div class="popover">
     <ul>
       @for (me of $notifications(); track me.notification.id) {
-        <li class="notifications-list">
-          <div>
-            <span>Topic: {{ me.notification.topic }}</span>
-            <div>Neuen Artikel: {{ me.notification.message?.name }} hinzugefügt</div>
+        <li class="notifications-list-item-container">
+          <div class="notifications-list">
+            <div>
+              <span>Topic: {{ me.notification.topic }}</span>
+              <div>{{ me.notification | notificationText }}</div>
+            </div>
+            <p-button size="small" variant="text" (click)="nachrichtLoeschen(me.notification.id)">
+              <span class="material-symbols-outlined">close</span>
+            </p-button>
           </div>
-          @if (!me.seen) {
-            <p-button (click)="gelesen(me.notification.id)">Gelesen</p-button>
-          }
         </li>
       } @empty {
         <div>Keine Benachrichtigungen</div>
@@ -17,7 +19,6 @@
     </ul>
   </div>
 </p-popover>
-<p-button (click)="add()"></p-button>
 <p-toolbar class="toolbar">
   <ng-template #start>
     @if (userService.$user()?.isAdmin) {
@@ -27,7 +28,7 @@
         </p-button>
       </div>
     }
-    <p-button aria-label="Benachrichtigungen" severity="secondary" (click)="noti.toggle($event)">
+    <p-button aria-label="Benachrichtigungen" severity="secondary" (click)="openNotifications($event)">
       <p-overlaybadge [value]="$newNotificationsCount()">
         <span class="material-symbols-outlined">notifications</span>
       </p-overlaybadge>
@@ -57,6 +58,9 @@
     </div>
   </ng-template>
 </p-toolbar>
+@if ($progressActive()) {
+  <p-progressbar mode="indeterminate" [style]="{ height: '6px' }"/>
+}
 
 <p-drawer styleClass="main-drawer" [closable]="false"
           [(visible)]="drawerService.$isVisible"

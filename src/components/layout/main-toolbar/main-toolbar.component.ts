@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild} from '@angular/core';
 import {DrawerService} from "../../../app/services/drawer.service";
 import {DialogService} from "primeng/dynamicdialog";
 import {UserService} from "../../../app/services/user.service";
@@ -15,8 +15,10 @@ import {Toolbar} from "primeng/toolbar";
 import {Popover} from "primeng/popover";
 import {NotificationsService} from "../../../app/services/notifications.service";
 import {NotificationMessage, Topic} from "../../../models/notification";
-import {ApiProduct} from "../../../models/product";
 import {OverlayBadge} from "primeng/overlaybadge";
+import {ProgressBar} from "primeng/progressbar";
+import {ProgressService} from "../../../app/services/progress.service";
+import {NotificationTextPipe} from "./notification-text.pipe";
 
 @Component({
   selector: 'main-toolbar',
@@ -28,7 +30,9 @@ import {OverlayBadge} from "primeng/overlaybadge";
     FormsModule,
     Toolbar,
     Popover,
-    OverlayBadge
+    OverlayBadge,
+    ProgressBar,
+    NotificationTextPipe
   ],
   standalone: true,
   templateUrl: './main-toolbar.component.html',
@@ -43,36 +47,30 @@ export class MainToolbarComponent {
   public uiService = inject(UiService)
   public router = inject(Router)
   public $newnotifications = inject(NotificationsService).$allNotifications;
+  public $progressActive = inject(ProgressService).$isProgressActive;
+  public $notificationsPopover = viewChild<Popover>('noti')
 
   #newNotificationEffect = effect(() => {
     const newNotification = this.$newnotifications();
     if (newNotification) {
-      this.$notifications.set([...untracked(() => this.$notifications()), {
+      this.$notifications.update(notifications => [{
         seen: false,
         notification: newNotification
-      }]);
+      }, ...notifications
+      ])
     }
   })
 
   public $notifications = signal<{ seen: boolean, notification: NotificationMessage<Topic> }[]>([])
   public $newNotificationsCount = computed(() => this.$notifications().filter(n => !n.seen).length)
 
-  gelesen(id: number) {
-    this.$notifications.set(this.$notifications().map(n => n.notification.id === id ? {
-      seen: true,
-      notification: n.notification
-    } : n))
+  nachrichtLoeschen(id: number) {
+    this.$notifications.update(notifications => notifications.filter(n => n.notification.id !== id))
   }
 
-  add() {
-    this.$notifications.set([{
-      seen: false,
-      notification: {
-        id: Math.random(),
-        topic: 'product_update',
-        message: {product: {id: 1, name: 'Test'} as ApiProduct}
-      }
-    }])
+  openNotifications(event: Event) {
+    this.$notificationsPopover()?.toggle(event)
+    this.$notifications.update((notifications => notifications.map(n => ({seen: true, notification: n.notification}))));
   }
 
   login() {
